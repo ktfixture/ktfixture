@@ -1,0 +1,3 @@
+rootProject.name = 'ktfixture'
+
+include 'modules/core'

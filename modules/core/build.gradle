@@ -1,0 +1,77 @@
+apply plugin: "kotlin"
+
+dependencies {
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compileOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+    testCompile 'org.assertj:assertj-core:3.8.0'
+}
+
+sourceSets {
+    main {
+        kotlin {
+            srcDirs = ['src/main/kotlin']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+
+    test {
+        kotlin {
+            srcDirs = ['src/test/kotlin']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: rootProject.properties['repoUsername'] ?: '', password: rootProject.properties['repoPassword'] ?: '')
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: rootProject.properties['repoUsername'] ?: '', password: rootProject.properties['repoPassword'] ?: '')
+            }
+
+            pom.project {
+                name 'KtFixture'
+                packaging 'jar'
+                description 'KtFixture a generic object factory'
+                url 'http://ktfixture.com'
+
+                scm {
+                    connection 'scm:git:git@github.com:ktfixture/ktfixture.git'
+                    developerConnection 'scm:git:git@github.com:ktfixture/ktfixture.git'
+                    url 'http://www.github.com/ktfixture/ktfixture/'
+                }
+
+                licenses {
+                    license {
+                        name 'Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'vinicius-pmoleta'
+                        name 'Vinicius Moleta'
+                        email 'vpmoleta@gmail.com'
+                    }
+                    developer {
+                        id 'tiarebalbi'
+                        name 'Tiarê Balbi'
+                        email 'me@tiarebalbi.com'
+                    }
+                }
+            }
+        }
+    }
+}
